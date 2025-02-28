@@ -6,11 +6,7 @@ interface ClubCardProps {
     _id: string;
     name: string;
     description: string;
-    owner?: {
-      // Make owner optional
-      username: string;
-      email: string;
-    };
+    owner?: { username: string; email: string };
     imageUrl?: string; // Add this if you plan to include club images
   };
 }
@@ -18,7 +14,7 @@ interface ClubCardProps {
 const ClubCard: React.FC<ClubCardProps> = ({ club }) => {
   return (
     <Link href={`/clubs/${club._id}`}>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 ease-in-out transform hover:scale-105">
+      <div className="bg-gray-500 rounded-lg shadow-md overflow-hidden transition-transform duration-300 ease-in-out transform hover:scale-105">
         {club.imageUrl && (
           <img
             src={club.imageUrl}

@@ -5,6 +5,7 @@ export async function setAdminRole(email: string) {
   try {
     await dbConnect();
 
+    // finds email of user and sets as admin
     const result = await User.findOneAndUpdate(
       { email: email },
       { $set: { role: "admin" } },

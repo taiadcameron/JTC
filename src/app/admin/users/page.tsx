@@ -21,7 +21,6 @@ export default function UsersManagement() {
   const [clubs, setClubs] = useState<Club[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedClub, setSelectedClub] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -155,7 +154,7 @@ export default function UsersManagement() {
                   <select
                     value={user?.role}
                     onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                    className="border rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500"
+                    className="border rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500 text-black"
                   >
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
@@ -167,7 +166,7 @@ export default function UsersManagement() {
                       onChange={(e) =>
                         handleClubAdminChange(user._id, e.target.value)
                       }
-                      className="border rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500"
+                      className="border rounded-md px-2 py-1 focus:ring-2 focus:ring-blue-500 text-black"
                       defaultValue=""
                     >
                       <option value="">Add as club admin</option>

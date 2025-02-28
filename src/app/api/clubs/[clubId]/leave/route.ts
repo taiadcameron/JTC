@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/dbConnect";
-import { Club } from "@/models/Clubs";
+import Club from "@/models/Clubs";
 import User from "@/models/User";
 
 export async function POST(req: NextRequest) {
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Left club successfully" }, // Updated success message
+      { message: "Left club successfully" },
       { status: 200 }
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

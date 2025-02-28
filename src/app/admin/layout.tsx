@@ -1,4 +1,3 @@
-// app/admin/layout.tsx
 "use client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -30,10 +29,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <aside className="w-64 bg-gray-800 text-white p-6">
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      <div className="w-full flex flex-col bg-gray-800 text-white p-6">
         <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
-        <nav className="space-y-4">
+        <nav className=" flex gap-8">
           <a href="/admin" className="block hover:text-gray-300">
             Dashboard
           </a>
@@ -44,7 +43,7 @@ export default function AdminLayout({
             Club Requests
           </a>
         </nav>
-      </aside>
+      </div>
       <main className="flex-1 p-8 bg-white">{children}</main>
     </div>
   );

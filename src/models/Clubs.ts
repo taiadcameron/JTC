@@ -45,4 +45,7 @@ const ClubSchema: Schema = new Schema(
   }
 );
 
-export const Club = models.Club || model<IClub>("Club", ClubSchema);
+const Club = models.Club || model<IClub>("Club", ClubSchema);
+export default Club;
+
+export type { IClub };

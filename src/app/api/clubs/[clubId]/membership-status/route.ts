@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import dbConnect from "@/lib/dbConnect";
-import { Club } from "@/models/Clubs";
+import Club from "@/models/Clubs";
 
 export async function GET(req: Request) {
   const session = await getServerSession();

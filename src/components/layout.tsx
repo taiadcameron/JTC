@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import LeftSide from "./LeftSide";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,8 +11,10 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">{children}</main>
+      <div className="flex">
+        <LeftSide />
+        <main className="flex-grow">{children}</main>
+      </div>
       <Footer />
     </div>
   );

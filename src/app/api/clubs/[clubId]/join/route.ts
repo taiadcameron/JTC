@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/dbConnect";
-import { Club } from "@/models/Clubs";
+import Club from "@/models/Clubs";
 import User from "@/models/User"; // Import the User model
 // app/api/clubs/[clubId]/join/route.ts
 export async function POST(req: NextRequest) {

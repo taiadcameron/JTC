@@ -1,7 +1,7 @@
 // app/api/clubs/route.ts
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
-import { Club } from "@/models/Clubs";
+import Club from "@/models/Clubs";
 
 export async function GET() {
   try {

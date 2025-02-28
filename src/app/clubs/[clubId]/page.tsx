@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/app/clubs/[clubId]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
@@ -16,6 +15,17 @@ interface Event {
   title: string;
   date: string;
   description: string;
+}
+
+interface Post {
+  title: string;
+  _id: string;
+  content: string;
+  author: {
+    username: string;
+    email: string;
+  };
+  createdAt: string;
 }
 
 interface Club {
@@ -36,10 +46,16 @@ export default function ClubPage() {
   const { data: session } = useSession();
   const [club, setClub] = useState<Club | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postTitle, setPostTitle] = useState("");
+  const [postContent, setPostContent] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMember, setIsMember] = useState(false);
   const [joinLoading, setJoinLoading] = useState(false);
+  const [postLoading, setPostLoading] = useState(false);
+
   useEffect(() => {
     const fetchClubData = async () => {
       setLoading(true);
@@ -78,6 +94,13 @@ export default function ClubPage() {
         if (eventsResponse.ok) {
           const eventsData = await eventsResponse.json();
           setEvents(eventsData.events);
+        }
+
+        // Fetch posts
+        const postsResponse = await fetch(`/api/clubs/${clubId}/posts`);
+        if (postsResponse.ok) {
+          const postsData = await postsResponse.json();
+          setPosts(postsData.posts);
         }
       } catch (error: any) {
         setError(error.message || "An unexpected error occurred");
@@ -136,6 +159,35 @@ export default function ClubPage() {
     }
   };
 
+  const handleCreatePost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session?.user?.email) {
+      setError("You must be logged in to create a post");
+      return;
+    }
+
+    setPostLoading(true);
+    try {
+      const response = await fetch(`/api/clubs/${clubId}/posts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: postTitle, content: postContent }),
+      });
+
+      if (response.ok) {
+        setPostContent("");
+        setPostTitle("");
+        const postsResponse = await fetch(`/api/clubs/${clubId}/posts`);
+        const postsData = await postsResponse.json();
+        setPosts(postsData.posts);
+      }
+    } catch (error: any) {
+      setError(error.message || "Failed to create post");
+    } finally {
+      setPostLoading(false);
+    }
+  };
+
   if (loading) return <div className="text-center mt-8">Loading...</div>;
   if (error)
     return <div className="text-center mt-8 text-red-500">Error: {error}</div>;
@@ -160,7 +212,9 @@ export default function ClubPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500">Owner</p>
-              <p className="font-medium">{club.owner?.username || "Unknown"}</p>
+              <p className="font-medium text-black">
+                {club.owner?.username || "Unknown"}
+              </p>
             </div>
             <button
               onClick={handleJoinLeaveClub}
@@ -180,14 +234,9 @@ export default function ClubPage() {
                 : "Join Club"}
             </button>
           </div>
-          {isMember && (
-            <p className="mt-2 text-green-600 font-medium">
-              ✓ You are a member of this club
-            </p>
-          )}
         </div>
 
-        {/* Events Section */}
+        {/* event section */}
         {events.length > 0 && (
           <div className="p-6 border-t">
             <h2 className="text-xl font-semibold mb-4">Upcoming Events</h2>
@@ -204,6 +253,62 @@ export default function ClubPage() {
             </ul>
           </div>
         )}
+
+        {/* Posts Section */}
+        <div className="p-6 border-t">
+          <h2 className="text-xl font-semibold mb-4 text-black">Club Posts</h2>
+
+          {isMember && (
+            <form onSubmit={handleCreatePost} className="mb-6">
+              <input
+                type="text"
+                value={postTitle}
+                onChange={(e) => setPostTitle(e.target.value)}
+                className="w-full p-3 border rounded-lg mb-2 text-black"
+                placeholder="Post title"
+                required
+              />
+              <textarea
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
+                className="w-full p-3 border rounded-lg resize-none text-black"
+                rows={4}
+                placeholder="Share something with the club..."
+                required
+              />
+              <button
+                type="submit"
+                disabled={postLoading}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              >
+                {postLoading ? "Posting..." : "Post"}
+              </button>
+            </form>
+          )}
+
+          <div className="space-y-4">
+            {posts.map((post) => (
+              <div key={post._id} className="bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center mb-3">
+                  <div>
+                    <div className="font-semibold text-black">
+                      {post.author.username}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {new Date(post.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-gray-700 whitespace-pre-wrap">
+                  {post.title}
+                </h3>
+                <p className="text-gray-700 whitespace-pre-wrap">
+                  {post.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

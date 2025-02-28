@@ -1,12 +1,11 @@
-// app/admin/page.tsx
 "use client";
+
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
 interface DashboardStats {
-  totalUsers: number;
   totalClubs: number;
-  pendingRequests: number;
+  totalUsers: number;
 }
 
 export default function AdminDashboard() {
@@ -14,13 +13,15 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     totalClubs: 0,
-    pendingRequests: 0,
   });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const response = await fetch("/api/admin/stats");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setStats(data);
       } catch (error) {
@@ -36,11 +37,11 @@ export default function AdminDashboard() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
         <p className="mt-2 text-gray-600">
-          Welcome back, {session?.user?.email}
+          Welcome back, {session?.user?.name}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
         <StatCard
           title="Total Users"
           value={stats.totalUsers}
@@ -48,25 +49,21 @@ export default function AdminDashboard() {
           color="bg-blue-50"
           textColor="text-blue-700"
         />
+
         <StatCard
-          title="Active Clubs"
+          title="Total Cubs"
           value={stats.totalClubs}
-          icon="🏢"
-          color="bg-green-50"
-          textColor="text-green-700"
-        />
-        <StatCard
-          title="Pending Requests"
-          value={stats.pendingRequests}
-          icon="📝"
-          color="bg-yellow-50"
-          textColor="text-yellow-700"
+          icon="📋"
+          color="bg-red-50"
+          textColor="text-blue-700"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold mb-4 text-black">
+            Quick Actions
+          </h2>
           <div className="space-y-2">
             <ActionButton label="Manage Users" href="/admin/users" icon="👥" />
             <ActionButton label="Club Requests" href="/admin/clubs" icon="📋" />
